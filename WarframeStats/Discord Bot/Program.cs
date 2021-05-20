@@ -3,7 +3,6 @@ using Discord.WebSocket;
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using WarframeStats;
 using WarframeStats.Drops;
@@ -89,7 +88,7 @@ namespace WarframeDiscordBot
 				try
 				{
 					Relic relicInfo = await warframeClient.dropClient.GetRelicLootAsync(words[3], words[4]);
-					await message.Channel.SendMessageAsync(relicInfo.ToString());
+					await message.Channel.SendMessageAsync(WFDataAsString.Relic(relicInfo));
 				}
 				catch (ArgumentException e)
 				{
@@ -99,121 +98,38 @@ namespace WarframeDiscordBot
 
 			if (message.Content.StartsWith("what in sorties"))
 			{
-				string repr = "Sorties can loot:\n";
-				SortieRewards sortieRewards = warframeClient.SortieRewards;
-				foreach (Loot item in sortieRewards.sortieRewards)
-				{
-					repr += $"	- {item.itemName}: {item.chance}% ({item.rarity})\n";
-				}
-
-				await message.Channel.SendMessageAsync(repr);
-			}
-
-			if (message.Content.StartsWith("what in transient"))
-			{
-
+				SortieRewards sortieRewards = warframeClient.dropClient.SortieRewards;
+				await message.Channel.SendMessageAsync(WFDataAsString.SortieRewards(sortieRewards));
 			}
 
 			if (message.Content.StartsWith("are there events"))
 			{
 				Event[] events = warframeClient.WorldStatePC.events;
-
-				string repr = $"Event list:\n";
-				foreach (Event e in events)
-				{
-					repr += $"	 - {e.description} on {e.node}\n";
-				}
-				if (events.Length == 0)
-				{
-					repr = "There are no events currently";
-				}
-
-				await message.Channel.SendMessageAsync(repr);
+				await message.Channel.SendMessageAsync(WFDataAsString.Events(events));
 			}
 
 			if (message.Content.StartsWith("give me the news"))
 			{
 				News[] news = warframeClient.WorldStatePC.news;
-				string repr = $"Here are the news:\n";
-				foreach (News n in news)
-				{
-					repr += $"	 - {n.message}\n";
-				}
-				if (news.Length == 0)
-				{
-					repr = "There are no news currently";
-				}
-				await message.Channel.SendMessageAsync(repr);
+				await message.Channel.SendMessageAsync(WFDataAsString.News(news));
 			}
 
 			if (message.Content.StartsWith("what is the sortie"))
 			{
 				Sortie sortie = warframeClient.WorldStatePC.sortie;
-				string repr = $"Today's sortie:\n" +
-					$"	- Faction: {sortie.faction}\n" +
-					$"	- Boss: {sortie.boss}\n" +
-					$"	- Time remaining: {sortie.TimeRemaining}\n" +
-					$"	- Missions:\n";
-				for (int i = 0; i < sortie.missions.Length; i++)
-				{
-					SortieMission variant = sortie.missions[i];
-					repr += $"		- Mission {i + 1}: {variant.missionType}, {variant.modifierDescription}\n";
-				}
-				await message.Channel.SendMessageAsync(repr);
+				await message.Channel.SendMessageAsync(WFDataAsString.Sortie(sortie));
 			}
 
 			if (message.Content.StartsWith("what are the void fissures"))
 			{
 				Fissure[] fissures = warframeClient.WorldStatePC.fissures;
-
-				if (words.Length == 5)
-				{
-					await message.Channel.SendMessageAsync($"Current void fissures:\n");
-					string tmprepr;
-					foreach (Fissure fissure in fissures)
-					{
-						tmprepr = $"	- {fissure.node}:\n" +
-							$"		- Type: {fissure.missionKey}\n" +
-							$"		- Railjack: {(fissure.isStorm ? "Yes" : "No")}\n" +
-							$"		- Tier: {fissure.tier}\n" +
-							$"		- Faction: {fissure.enemyKey}\n" +
-							$"		- Time remaining: {fissure.timeRemaining}";
-						await message.Channel.SendMessageAsync(tmprepr);
-					}
-				}
-				else
-				{
-					string repr = $"Current {words[5]} void fissures\n";
-					foreach (Fissure fissure in fissures)
-					{
-						if (fissure.tier == words[5])
-						{
-							repr += $"	- {fissure.node}:\n" +
-							$"		- Type: {fissure.missionKey}\n" +
-							$"		- Railjack: {(fissure.isStorm ? "Yes" : "No")}\n" +
-							$"		- Faction: {fissure.enemyKey}\n" +
-							$"		- Time remaining: {fissure.timeRemaining}\n";
-						}
-					}
-					await message.Channel.SendMessageAsync(repr);
-				}
-
+				await message.Channel.SendMessageAsync(WFDataAsString.Fissures(fissures, words[5]));
 			}
 
 			if (message.Content.StartsWith("when baro"))
 			{
-				VoidTrader voidTrader = warframeClient.WorldStatePC.voidTrader;
-				string repr;
-				if (voidTrader.active)
-				{
-					repr = $"{voidTrader.character} is currently at {voidTrader.location}!";
-				}
-				else
-				{
-					repr = $"{voidTrader.character} is due in {voidTrader.startString} at {voidTrader.location}";
-
-				}
-				await message.Channel.SendMessageAsync(repr);
+				VoidTrader voidTrader = warframeClient.WorldStatePC.voidTrader;				
+				await message.Channel.SendMessageAsync(WFDataAsString.VoidTrader(voidTrader));
 			}
 
 			return Task.CompletedTask;
