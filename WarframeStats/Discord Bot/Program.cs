@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WarframeStats;
-using WarframeStats.WorldState;
 using WarframeStats.Drops;
+using WarframeStats.WorldState;
 
 namespace WarframeDiscordBot
 {
@@ -63,44 +63,31 @@ namespace WarframeDiscordBot
 		{
 			string[] words = message.Content.Split(" ");
 
-			//if (message.Content.StartsWith("what at location "))
-			//{
-			//	try
-			//	{
-			//		string response = await httpClient.GetStringAsync($"missionRewards/{words[3]}/{words[4]}.json");
-			//		try
-			//		{
-			//			EndlessMissionInfo missionInfo = JsonSerializer.Deserialize<EndlessMissionInfo>(response);
-			//			await message.Channel.SendMessageAsync(missionInfo.ToString());
-			//		}
-			//		catch (JsonException)
-			//		{
-			//			FiniteMissionInfo missionInfo = JsonSerializer.Deserialize<FiniteMissionInfo>(response);
-			//			await message.Channel.SendMessageAsync(missionInfo.ToString());
-			//		}
-			//
-			//	}
-			//	catch (HttpRequestException)
-			//	{
-			//		await message.Channel.SendMessageAsync($"There is no mission node called {words[4]} on {words[3]} !");
-			//	}
-			//}
-			//
-			//if (message.Content.StartsWith("what in relic "))
-			//{
-			//	try
-			//	{
-			//		string response = await httpClient.GetStringAsync($"relics/{words[3]}/{words[4]}.json");
-			//
-			//		RelicInfo relicInfo = JsonSerializer.Deserialize<RelicInfo>(response);
-			//
-			//		await message.Channel.SendMessageAsync(relicInfo.ToString());
-			//	}
-			//	catch (HttpRequestException)
-			//	{
-			//		await message.Channel.SendMessageAsync($"There is no relic {words[3]} {words[4]} !");
-			//	}
-			//}
+			if (message.Content.StartsWith("what at location "))
+			{
+				try
+				{
+					WarframeStats.Drops.Mission missionInfo = await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
+					await message.Channel.SendMessageAsync(missionInfo.ToString());
+				}
+				catch (ArgumentException e)
+				{
+					await message.Channel.SendMessageAsync(e.Message);
+				}
+			}
+
+			if (message.Content.StartsWith("what in relic "))
+			{
+				try
+				{
+					Relic relicInfo = await warframeClient.dropClient.GetRelicLootAsync(words[3], words[4]);
+					await message.Channel.SendMessageAsync(relicInfo.ToString());
+				}
+				catch (ArgumentException e)
+				{
+					await message.Channel.SendMessageAsync(e.Message);
+				}
+			}
 
 			if (message.Content.StartsWith("what in sorties"))
 			{

@@ -18,6 +18,32 @@ namespace WarframeStats.Drops
 		/// </summary>
 		public TransientRewards TransientRewards { get; private set; }
 
+		public async Task<Relic> GetRelicLootAsync(string tier, string name)
+		{
+			try
+			{
+				string response = await http.GetStringAsync($"relics/{tier}/{name}.json");
+				return await JsonSerializer.DeserializeAsync<Relic>(response.ToStream());
+			}
+			catch (HttpRequestException)
+			{
+				throw new ArgumentException($"There is no relic {tier} {name}");
+			}
+		}
+
+		public async Task<Mission> GetMissionLootAsync(string planet, string node)
+		{
+			try
+			{
+				string response = await http.GetStringAsync($"missionRewards/{planet}/{node}.json");
+				return await JsonSerializer.DeserializeAsync<Mission>(response.ToStream());
+			}
+			catch (HttpRequestException)
+			{
+				throw new ArgumentException($"There is no mission called {node} on {planet}");
+			}
+		}
+
 		public DropClient()
 		{
 			http = new HttpClient
