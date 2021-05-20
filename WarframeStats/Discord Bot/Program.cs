@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using WarframeStats;
 using WarframeStats.WorldState;
+using WarframeStats.Drops;
 
 namespace WarframeDiscordBot
 {
@@ -107,8 +108,8 @@ namespace WarframeDiscordBot
 			if (message.Content.StartsWith("what in sorties"))
 			{
 				string repr = "Sorties can loot:\n";
-				WarframeStats.Drops.SortieRewards sortieRewards = warframeClient.SortieRewards;
-				foreach (WarframeStats.Drops.Loot item in sortieRewards.sortieRewards)
+				SortieRewards sortieRewards = warframeClient.SortieRewards;
+				foreach (Loot item in sortieRewards.sortieRewards)
 				{
 					repr += $"	- {item.itemName}: {item.chance}% ({item.rarity})\n";
 				}
