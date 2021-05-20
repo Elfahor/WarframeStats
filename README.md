@@ -2,7 +2,7 @@
 
 Warframe is a free-to-play looter-shooter game on PC, PS4 and Xbox One, developped by Digital Extremes.
 
-DE provides an API for accessing game data. More info at http://hub.warframestat.us
+DE provides an API for accessing game data. More info at http://warframestat.us
 
 This project is a .NET wrapper to this API to allow everyone to easily integrate Warframe-related data in their project. There is also a sample DiscordBot project that shows use of this wrapper.
 
