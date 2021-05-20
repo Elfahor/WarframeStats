@@ -31,12 +31,19 @@ namespace WarframeStats.Drops
 			}
 		}
 
-		public async Task<Mission> GetMissionLootAsync(string planet, string node)
+		public async Task<MissionNode> GetMissionLootAsync(string planet, string node)
 		{
 			try
 			{
 				string response = await http.GetStringAsync($"missionRewards/{planet}/{node}.json");
-				return await JsonSerializer.DeserializeAsync<Mission>(response.ToStream());
+				try
+				{
+					return await JsonSerializer.DeserializeAsync<EndlessMission>(response.ToStream());
+				}
+				catch (JsonException)
+				{
+					return await JsonSerializer.DeserializeAsync<FiniteMission>(response.ToStream());
+				}
 			}
 			catch (HttpRequestException)
 			{

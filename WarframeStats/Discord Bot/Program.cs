@@ -67,8 +67,16 @@ namespace WarframeDiscordBot
 			{
 				try
 				{
-					WarframeStats.Drops.Mission missionInfo = await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
-					await message.Channel.SendMessageAsync(missionInfo.ToString());
+					try
+					{
+						EndlessMission missionInfo = (EndlessMission)await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
+						await message.Channel.SendMessageAsync(missionInfo.ToString());
+					}
+					catch (InvalidCastException)
+					{
+						FiniteMission missionInfo = (FiniteMission)await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
+						await message.Channel.SendMessageAsync(missionInfo.ToString());
+					}
 				}
 				catch (ArgumentException e)
 				{
