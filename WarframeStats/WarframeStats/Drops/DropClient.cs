@@ -7,7 +7,7 @@ namespace WarframeStats.Drops
 {
 	public class DropClient
 	{
-		private HttpClient http;
+		private readonly HttpClient http;
 
 		/// <summary>
 		/// Reward pool for sorties
@@ -20,8 +20,10 @@ namespace WarframeStats.Drops
 
 		public DropClient()
 		{
-			http = new HttpClient();
-			http.BaseAddress = new Uri("https://drops.warframestat.us/data/");
+			http = new HttpClient
+			{
+				BaseAddress = new Uri("https://drops.warframestat.us/data/")
+			};
 		}
 
 		public async Task RefreshDataAsync()

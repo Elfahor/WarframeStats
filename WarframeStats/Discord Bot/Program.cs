@@ -41,9 +41,6 @@ namespace WarframeDiscordBot
 			//handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 			httpClient.BaseAddress = new Uri("https://drops.warframestat.us/data/");
 
-			Data.SortiesData = JsonSerializer.Deserialize<SortieInfo>(await httpClient.GetStringAsync($"sortieRewards.json"));
-			Data.CetusBountiesData = JsonSerializer.Deserialize<CetusBountiesInfo>(await httpClient.GetStringAsync($"cetusBountyRewards.json"));
-
 			await warframeClient.RefreshDataAsync("pc");
 			await warframeClient.RefreshDataAsync("ps4");
 			await warframeClient.RefreshDataAsync("xb1");
@@ -66,44 +63,44 @@ namespace WarframeDiscordBot
 		{
 			string[] words = message.Content.Split(" ");
 
-			if (message.Content.StartsWith("what at location "))
-			{
-				try
-				{
-					string response = await httpClient.GetStringAsync($"missionRewards/{words[3]}/{words[4]}.json");
-					try
-					{
-						EndlessMissionInfo missionInfo = JsonSerializer.Deserialize<EndlessMissionInfo>(response);
-						await message.Channel.SendMessageAsync(missionInfo.ToString());
-					}
-					catch (JsonException)
-					{
-						FiniteMissionInfo missionInfo = JsonSerializer.Deserialize<FiniteMissionInfo>(response);
-						await message.Channel.SendMessageAsync(missionInfo.ToString());
-					}
-
-				}
-				catch (HttpRequestException)
-				{
-					await message.Channel.SendMessageAsync($"There is no mission node called {words[4]} on {words[3]} !");
-				}
-			}
-
-			if (message.Content.StartsWith("what in relic "))
-			{
-				try
-				{
-					string response = await httpClient.GetStringAsync($"relics/{words[3]}/{words[4]}.json");
-
-					RelicInfo relicInfo = JsonSerializer.Deserialize<RelicInfo>(response);
-
-					await message.Channel.SendMessageAsync(relicInfo.ToString());
-				}
-				catch (HttpRequestException)
-				{
-					await message.Channel.SendMessageAsync($"There is no relic {words[3]} {words[4]} !");
-				}
-			}
+			//if (message.Content.StartsWith("what at location "))
+			//{
+			//	try
+			//	{
+			//		string response = await httpClient.GetStringAsync($"missionRewards/{words[3]}/{words[4]}.json");
+			//		try
+			//		{
+			//			EndlessMissionInfo missionInfo = JsonSerializer.Deserialize<EndlessMissionInfo>(response);
+			//			await message.Channel.SendMessageAsync(missionInfo.ToString());
+			//		}
+			//		catch (JsonException)
+			//		{
+			//			FiniteMissionInfo missionInfo = JsonSerializer.Deserialize<FiniteMissionInfo>(response);
+			//			await message.Channel.SendMessageAsync(missionInfo.ToString());
+			//		}
+			//
+			//	}
+			//	catch (HttpRequestException)
+			//	{
+			//		await message.Channel.SendMessageAsync($"There is no mission node called {words[4]} on {words[3]} !");
+			//	}
+			//}
+			//
+			//if (message.Content.StartsWith("what in relic "))
+			//{
+			//	try
+			//	{
+			//		string response = await httpClient.GetStringAsync($"relics/{words[3]}/{words[4]}.json");
+			//
+			//		RelicInfo relicInfo = JsonSerializer.Deserialize<RelicInfo>(response);
+			//
+			//		await message.Channel.SendMessageAsync(relicInfo.ToString());
+			//	}
+			//	catch (HttpRequestException)
+			//	{
+			//		await message.Channel.SendMessageAsync($"There is no relic {words[3]} {words[4]} !");
+			//	}
+			//}
 
 			if (message.Content.StartsWith("what in sorties"))
 			{
