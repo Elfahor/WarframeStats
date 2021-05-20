@@ -36,6 +36,19 @@ namespace WarframeStats
 		/// Reward pool for special missions: Razoback Armadas, Nightmare mode...
 		/// </summary>
 		public Drops.TransientRewards TransientRewards { get => dropClient.TransientRewards; }
+		/// <summary>
+		/// Get data about a relic's tiers and drops
+		/// </summary>
+		/// <param name="tier">Lith, Meso, Neo, Axi, or Requiem</param>
+		/// <param name="name">Names look like O5, K4, Z2</param>
+		/// <returns>The relic named "tier" "name"</returns>
+		public async Task<Drops.Relic> GetRelicLootAsync(string tier, string name) => await dropClient.GetRelicLootAsync(tier, name);
+		/// <summary>
+		/// Get the reward pool for a mission
+		/// </summary>
+		/// <param name="planet">Earth, Ceres, Sedna...</param>
+		/// <param name="node">The name of the mission (e.g. Apollo)</param>
+		public async Task<Drops.MissionNode> GetMissionLootAsync(string planet, string node) => await dropClient.GetMissionLootAsync(planet, node);
 
 		public WarframeClient()
 		{

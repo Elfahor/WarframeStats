@@ -3,8 +3,14 @@ using WarframeStats.WorldState;
 
 namespace WarframeStats
 {
+	/// <summary>
+	/// Offers conversion of various objects into a human-readable format
+	/// </summary>
 	public static class WFDataAsString
 	{
+		/// <summary>
+		/// Converts SortieRewards in a human readable format
+		/// </summary>
 		public static string SortieRewards(SortieRewards sortieRewards)
 		{
 			string repr = "Sorties can loot:\n";
@@ -15,6 +21,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Event[] in a human readable format
+		/// </summary>
 		public static string Events(Event[] events)
 		{
 			string repr = $"Event list:\n";
@@ -29,6 +38,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts News[] in a human readable format
+		/// </summary>
 		public static string News(News[] news)
 		{
 			string repr = $"Here are the news:\n";
@@ -43,6 +55,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Sortie in a human readable format
+		/// </summary>
 		public static string Sortie(Sortie sortie)
 		{
 			string repr = $"Today's sortie:\n" +
@@ -58,6 +73,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Fissure[] in a human readable format
+		/// </summary>
 		public static string Fissures(Fissure[] fissures, string tier)
 		{
 			string repr = $"Current {tier} void fissures\n";
@@ -75,6 +93,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts VoidTrader in a human readable format
+		/// </summary>
 		public static string VoidTrader(VoidTrader voidTrader)
 		{
 			string repr;
@@ -90,6 +111,9 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Relic in a human readable format
+		/// </summary>
 		public static string Relic(Relic relic)
 		{
 			string repr = $"Relic {relic.tier} {relic.name} contains:\n" +
@@ -104,12 +128,18 @@ namespace WarframeStats
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Loot in a human readable format
+		/// </summary>
 		public static string Loot(Loot loot)
 		{
 			string repr = $"{loot.itemName}: {loot.chance}% ({loot.rarity})";
 			return repr;
 		}
 
+		/// <summary>
+		/// Converts Loot[] in a human readable format
+		/// </summary>
 		public static string Loots(Loot[] loots)
 		{
 			string repr = "";

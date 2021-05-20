@@ -15,8 +15,7 @@ namespace WarframeDiscordBot
 		private static readonly string botToken = File.ReadAllText("bot_token.txt");
 
 		private static readonly DiscordSocketClient discordClient = new DiscordSocketClient();
-		private static readonly HttpClientHandler handler = new HttpClientHandler();
-		private static readonly HttpClient httpClient = new HttpClient(handler);
+		private static readonly HttpClient httpClient = new HttpClient();
 		private static readonly WarframeClient warframeClient = new WarframeClient();
 
 		private class BotActivity : IActivity
@@ -37,7 +36,6 @@ namespace WarframeDiscordBot
 			discordClient.Log += Log;
 			discordClient.MessageReceived += MessageReceived;
 
-			//handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 			httpClient.BaseAddress = new Uri("https://drops.warframestat.us/data/");
 
 			await warframeClient.RefreshDataAsync("pc");
@@ -68,12 +66,12 @@ namespace WarframeDiscordBot
 				{
 					try
 					{
-						EndlessMission missionInfo = (EndlessMission)await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
+						EndlessMission missionInfo = (EndlessMission)await warframeClient.GetMissionLootAsync(words[3], words[4]);
 						await message.Channel.SendMessageAsync(missionInfo.ToString());
 					}
 					catch (InvalidCastException)
 					{
-						FiniteMission missionInfo = (FiniteMission)await warframeClient.dropClient.GetMissionLootAsync(words[3], words[4]);
+						FiniteMission missionInfo = (FiniteMission)await warframeClient.GetMissionLootAsync(words[3], words[4]);
 						await message.Channel.SendMessageAsync(missionInfo.ToString());
 					}
 				}
@@ -87,7 +85,7 @@ namespace WarframeDiscordBot
 			{
 				try
 				{
-					Relic relicInfo = await warframeClient.dropClient.GetRelicLootAsync(words[3], words[4]);
+					Relic relicInfo = await warframeClient.GetRelicLootAsync(words[3], words[4]);
 					await message.Channel.SendMessageAsync(WFDataAsString.Relic(relicInfo));
 				}
 				catch (ArgumentException e)
@@ -98,7 +96,7 @@ namespace WarframeDiscordBot
 
 			if (message.Content.StartsWith("what in sorties"))
 			{
-				SortieRewards sortieRewards = warframeClient.dropClient.SortieRewards;
+				SortieRewards sortieRewards = warframeClient.SortieRewards;
 				await message.Channel.SendMessageAsync(WFDataAsString.SortieRewards(sortieRewards));
 			}
 

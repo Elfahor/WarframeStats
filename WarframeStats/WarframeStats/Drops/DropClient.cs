@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace WarframeStats.Drops
 {
+	/// <summary>
+	/// Client for getting drop data
+	/// </summary>
 	public class DropClient
 	{
 		private readonly HttpClient http;
@@ -13,11 +16,20 @@ namespace WarframeStats.Drops
 		/// Reward pool for sorties
 		/// </summary>
 		public SortieRewards SortieRewards {get; private set;}
+
 		/// <summary>
 		/// Reward pool for special missions: Razoback Armadas, Nightmare mode...
 		/// </summary>
 		public TransientRewards TransientRewards { get; private set; }
 
+		public ModLocations ModLocations { get; private set; }
+
+		/// <summary>
+		/// Get data about a relic's tiers and drops
+		/// </summary>
+		/// <param name="tier">Lith, Meso, Neo, Axi, or Requiem</param>
+		/// <param name="name">Names look like O5, K4, Z2</param>
+		/// <returns>The relic named "tier" "name"</returns>
 		public async Task<Relic> GetRelicLootAsync(string tier, string name)
 		{
 			try
@@ -31,6 +43,11 @@ namespace WarframeStats.Drops
 			}
 		}
 
+		/// <summary>
+		/// Get the reward pool for a mission
+		/// </summary>
+		/// <param name="planet">Earth, Ceres, Sedna...</param>
+		/// <param name="node">The name of the mission (e.g. Apollo)</param>
 		public async Task<MissionNode> GetMissionLootAsync(string planet, string node)
 		{
 			try
@@ -59,6 +76,10 @@ namespace WarframeStats.Drops
 			};
 		}
 
+		/// <summary>
+		/// Refreshes static data, like sorties reward pools. This doesn't need to called often as these pools rarely change.
+		/// </summary>
+		/// <returns></returns>
 		public async Task RefreshDataAsync()
 		{
 			string response;
@@ -68,6 +89,9 @@ namespace WarframeStats.Drops
 
 			response = await http.GetStringAsync("transientRewards.json");
 			TransientRewards = await JsonSerializer.DeserializeAsync<TransientRewards>(response.ToStream());
+
+			response = await http.GetStringAsync("modLocations.json");
+			ModLocations = await JsonSerializer.DeserializeAsync<ModLocations>(response.ToStream());
 		}
 	}
 }
