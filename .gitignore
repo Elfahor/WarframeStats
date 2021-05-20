@@ -339,5 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-#Security
 /WarframeStats/Discord Bot/bot_token.txt
