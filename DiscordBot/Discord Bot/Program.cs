@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,7 +12,8 @@ namespace WarframeDiscordBot
 {
 	internal class Program
 	{
-		private const string botToken = "NTc5MzYwNzY2OTQ4Mjc4Mjc5.XOBBwg.zH9tP7tdzeTGGUdL1FUQFz6yDSI";
+		private static readonly string botToken = File.ReadAllText("bot_token.txt");
+
 		private static readonly DiscordSocketClient discordClient = new DiscordSocketClient();
 		private static readonly HttpClientHandler handler = new HttpClientHandler();
 		private static readonly HttpClient httpClient = new HttpClient(handler);

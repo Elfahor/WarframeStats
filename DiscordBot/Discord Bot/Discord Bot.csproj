@@ -15,4 +15,10 @@
     <ProjectReference Include="..\WarframeStats\WarframeStats.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="bot_token.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
