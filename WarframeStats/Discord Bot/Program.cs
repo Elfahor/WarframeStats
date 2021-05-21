@@ -14,19 +14,20 @@ namespace WarframeDiscordBot
 	{
 		private static readonly string botToken = File.ReadAllText("bot_token.txt");
 
-		private static readonly DiscordSocketClient discordClient = new DiscordSocketClient();
+		private static readonly DiscordSocketConfig discordConfig = new DiscordSocketConfig { MessageCacheSize = 1 };
+		private static readonly DiscordSocketClient discordClient = new DiscordSocketClient(discordConfig);
 		private static readonly HttpClient httpClient = new HttpClient();
 		private static readonly WarframeClient warframeClient = new WarframeClient();
 
 		private class BotActivity : IActivity
 		{
-			public string Name => "ws.warframestat.us";
+			public string Name => "api.warframestat.us";
 
 			public ActivityType Type => ActivityType.Listening;
 
 			public ActivityProperties Flags => ActivityProperties.None;
 
-			public string Details => "ws.warframestat.us";
+			public string Details => "Made by Elfahor";
 		}
 
 		private static void Main() => MainAsync().GetAwaiter().GetResult();
@@ -81,7 +82,7 @@ namespace WarframeDiscordBot
 				}
 			}
 
-			if (message.Content.StartsWith("what in relic "))
+			else if (message.Content.StartsWith("what in relic "))
 			{
 				try
 				{
@@ -94,40 +95,58 @@ namespace WarframeDiscordBot
 				}
 			}
 
-			if (message.Content.StartsWith("what in sorties"))
+			else if (message.Content.StartsWith("what in sorties"))
 			{
 				SortieRewards sortieRewards = warframeClient.SortieRewards;
 				await message.Channel.SendMessageAsync(WFDataAsString.SortieRewards(sortieRewards));
 			}
 
-			if (message.Content.StartsWith("are there events"))
+			else if (message.Content.StartsWith("are there events"))
 			{
 				Event[] events = warframeClient.WorldStatePC.events;
 				await message.Channel.SendMessageAsync(WFDataAsString.Events(events));
 			}
 
-			if (message.Content.StartsWith("give me the news"))
+			else if (message.Content.StartsWith("give me the news"))
 			{
 				News[] news = warframeClient.WorldStatePC.news;
 				await message.Channel.SendMessageAsync(WFDataAsString.News(news));
 			}
 
-			if (message.Content.StartsWith("what is the sortie"))
+			else if (message.Content.StartsWith("what is the sortie"))
 			{
 				Sortie sortie = warframeClient.WorldStatePC.sortie;
 				await message.Channel.SendMessageAsync(WFDataAsString.Sortie(sortie));
 			}
 
-			if (message.Content.StartsWith("what are the void fissures"))
+			else if (message.Content.StartsWith("what are the void fissures"))
 			{
 				Fissure[] fissures = warframeClient.WorldStatePC.fissures;
 				await message.Channel.SendMessageAsync(WFDataAsString.Fissures(fissures, words[5]));
 			}
 
-			if (message.Content.StartsWith("when baro"))
+			else if (message.Content.StartsWith("when baro"))
 			{
 				VoidTrader voidTrader = warframeClient.WorldStatePC.voidTrader;				
 				await message.Channel.SendMessageAsync(WFDataAsString.VoidTrader(voidTrader));
+			}
+
+			else if (message.Content.StartsWith("where mod"))
+			{
+				try
+				{
+					string modName = "";
+					for (int i = 2; i < words.Length; ++i)
+					{
+						modName += words[i];
+					}
+					Mod.EnemyDroppedOn[] ennemiesDroppedOn = await warframeClient.dropClient.GetModDroppersAsync(modName);
+					await message.Channel.SendMessageAsync(WFDataAsString.ModEnemiesDroppedOn(ennemiesDroppedOn));
+				}
+				catch (ArgumentException e)
+				{
+					await message.Channel.SendMessageAsync(e.Message);
+				}
 			}
 
 			return Task.CompletedTask;

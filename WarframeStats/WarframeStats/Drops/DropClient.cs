@@ -15,14 +15,39 @@ namespace WarframeStats.Drops
 		/// <summary>
 		/// Reward pool for sorties
 		/// </summary>
-		public SortieRewards SortieRewards {get; private set;}
+		public SortieRewards SortieRewards { get; private set; }
 
 		/// <summary>
 		/// Reward pool for special missions: Razoback Armadas, Nightmare mode...
 		/// </summary>
 		public TransientRewards TransientRewards { get; private set; }
 
+		/// <summary>
+		/// Get all the data for which enemies mods drop on
+		/// </summary>
 		public ModLocations ModLocations { get; private set; }
+
+		/// <summary>
+		/// Get the whole list of enemies a certain mod drops on
+		/// </summary>
+		/// <param name="modName">Name of the mod</param>
+		/// <returns></returns>
+		public async Task<Mod.EnemyDroppedOn[]> GetModDroppersAsync(string modName)
+		{
+			return await Task.Run(() => GetModDroppers(modName));
+		}
+
+		private Mod.EnemyDroppedOn[] GetModDroppers(string modName)
+		{
+			foreach (Mod item in ModLocations.modLocations)
+			{
+				if (item.modName == modName)
+				{
+					return item.enemies;
+				}
+			}
+			throw new ArgumentException("This mod does not exist or does not drop on an enemy");
+		}
 
 		/// <summary>
 		/// Get data about a relic's tiers and drops

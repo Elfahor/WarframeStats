@@ -149,5 +149,15 @@ namespace WarframeStats
 			}
 			return repr;
 		}
+
+		public static string ModEnemiesDroppedOn(Mod.EnemyDroppedOn[] enemiesDroppedOn)
+		{
+			string repr = "The mod drops on:\n";
+			foreach (Mod.EnemyDroppedOn enemy in enemiesDroppedOn)
+			{
+				repr += $"	- {enemy.enemyName}: {enemy.chance}% ({enemy.rarity})\n";
+			}
+			return repr;
+		}
 	}
 }

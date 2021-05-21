@@ -49,6 +49,16 @@ namespace WarframeStats
 		/// <param name="planet">Earth, Ceres, Sedna...</param>
 		/// <param name="node">The name of the mission (e.g. Apollo)</param>
 		public async Task<Drops.MissionNode> GetMissionLootAsync(string planet, string node) => await dropClient.GetMissionLootAsync(planet, node);
+		/// <summary>
+		/// Get all the data for which enemies mods drop on
+		/// </summary>
+		public Drops.ModLocations ModLocations { get => dropClient.ModLocations; }
+		/// <summary>
+		/// Get the whole list of enemies a certain mod drops on
+		/// </summary>
+		/// <param name="modName">Name of the mod</param>
+		/// <returns></returns>
+		public async Task<Drops.Mod.EnemyDroppedOn[]> GetEnemiesModDropsOn(string modName) => await dropClient.GetModDroppersAsync(modName);
 
 		public WarframeClient()
 		{
