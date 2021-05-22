@@ -150,14 +150,25 @@ namespace WarframeStats
 			return repr;
 		}
 
-		public static string ModEnemiesDroppedOn(Mod.EnemyDroppedOn[] enemiesDroppedOn)
+		//public static string ModEnemiesDroppedOn(Mod.EnemyDroppedOn[] enemiesDroppedOn)
+		//{
+		//	string repr = "The mod drops on:\n";
+		//	foreach (Mod.EnemyDroppedOn enemy in enemiesDroppedOn)
+		//	{
+		//		repr += $"	- {enemy.enemyName}: {enemy.chance}% ({enemy.rarity})\n";
+		//	}
+		//	return repr;
+		//}
+
+		public static string DropLocationsItems(DropLocation[] dropLocations)
 		{
-			string repr = "The mod drops on:\n";
-			foreach (Mod.EnemyDroppedOn enemy in enemiesDroppedOn)
+			string repr = $"{dropLocations[0].item} drops on:\n";
+			foreach (DropLocation location in dropLocations)
 			{
-				repr += $"	- {enemy.enemyName}: {enemy.chance}% ({enemy.rarity})\n";
+				repr += $"	- {location.place}: {location.chance}% ({location.rarity})\n";
 			}
 			return repr;
+
 		}
 	}
 }

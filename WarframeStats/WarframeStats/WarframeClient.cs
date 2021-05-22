@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WarframeStats
 {
 	/// <summary>
 	/// Full client for all services: world state, player stats, drop data
 	/// </summary>
-	public class WarframeClient
+	public class WarframeClient : IDisposable
 	{
 		/// <summary>
 		/// Client for getting the world's state
@@ -52,13 +53,13 @@ namespace WarframeStats
 		/// <summary>
 		/// Get all the data for which enemies mods drop on
 		/// </summary>
-		public Drops.ModLocations ModLocations { get => dropClient.ModLocations; }
-		/// <summary>
+		//public Drops.ModLocations ModLocations { get => dropClient.ModLocations; }
+		///// <summary>
 		/// Get the whole list of enemies a certain mod drops on
 		/// </summary>
 		/// <param name="modName">Name of the mod</param>
 		/// <returns></returns>
-		public async Task<Drops.Mod.EnemyDroppedOn[]> GetEnemiesModDropsOn(string modName) => await dropClient.GetModDroppersAsync(modName);
+		//public async Task<Drops.Mod.EnemyDroppedOn[]> GetEnemiesModDropsOn(string modName) => await dropClient.GetModDroppersAsync(modName);
 
 		public WarframeClient()
 		{
@@ -73,9 +74,16 @@ namespace WarframeStats
 		/// <returns></returns>
 		public async Task RefreshDataAsync(string platform)
 		{
-			await worldStateClient.RefreshDataAsync(platform);
-			await dropClient.RefreshDataAsync();
+			Task worldStateTask = worldStateClient.RefreshDataAsync(platform);
+			Task dropTask = dropClient.RefreshDataAsync();
+			await worldStateTask;
+			await dropTask;
 		}
 
+		public void Dispose()
+		{
+			dropClient.Dispose();
+			worldStateClient.Dispose();
+		}
 	}
 }

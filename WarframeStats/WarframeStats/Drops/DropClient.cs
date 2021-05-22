@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace WarframeStats.Drops
 	/// <summary>
 	/// Client for getting drop data
 	/// </summary>
-	public class DropClient
+	public class DropClient : IDisposable
 	{
 		private readonly HttpClient http;
 
@@ -22,32 +23,32 @@ namespace WarframeStats.Drops
 		/// </summary>
 		public TransientRewards TransientRewards { get; private set; }
 
-		/// <summary>
+		///// <summary>
 		/// Get all the data for which enemies mods drop on
 		/// </summary>
-		public ModLocations ModLocations { get; private set; }
-
-		/// <summary>
+		//public ModLocations ModLocations { get; private set; }
+		//
+		///// <summary>
 		/// Get the whole list of enemies a certain mod drops on
 		/// </summary>
 		/// <param name="modName">Name of the mod</param>
 		/// <returns></returns>
-		public async Task<Mod.EnemyDroppedOn[]> GetModDroppersAsync(string modName)
-		{
-			return await Task.Run(() => GetModDroppers(modName));
-		}
-
-		private Mod.EnemyDroppedOn[] GetModDroppers(string modName)
-		{
-			foreach (Mod item in ModLocations.modLocations)
-			{
-				if (item.modName == modName)
-				{
-					return item.enemies;
-				}
-			}
-			throw new ArgumentException("This mod does not exist or does not drop on an enemy");
-		}
+		//public async Task<Mod.EnemyDroppedOn[]> GetModDroppersAsync(string modName)
+		//{
+		//	return await Task.Run(() => GetModDroppers(modName));
+		//}
+		//
+		//private Mod.EnemyDroppedOn[] GetModDroppers(string modName)
+		//{
+		//	foreach (Mod item in ModLocations.modLocations)
+		//	{
+		//		if (item.modName == modName)
+		//		{
+		//			return item.enemies;
+		//		}
+		//	}
+		//	throw new ArgumentException("This mod does not exist or does not drop on an enemy");
+		//}
 
 		/// <summary>
 		/// Get data about a relic's tiers and drops
@@ -93,6 +94,46 @@ namespace WarframeStats.Drops
 			}
 		}
 
+		public async Task<DropLocation[]> SearchForItemAndLocationAsync(string itemOrLocation)
+		{
+			string requestUri = "http://api.warframestat.us/drops/search/" + itemOrLocation.Replace("/", "%2F");
+			string response = await http.GetStringAsync(requestUri);
+			return await JsonSerializer.DeserializeAsync<DropLocation[]>(response.ToStream());
+		}
+		public async Task<DropLocation[]> SearchForItemAsync(string item, bool strictMatch = true)
+		{
+			DropLocation[] dropLocations = await SearchForItemAndLocationAsync(item);
+			List<DropLocation> validated = new List<DropLocation>(dropLocations.Length);
+			string searchedItemUPPER = item.ToUpper();
+			foreach (DropLocation location in dropLocations)
+			{
+				string itemNameUPPER = location.item.ToUpper();
+				if ((strictMatch && searchedItemUPPER == itemNameUPPER) || (!strictMatch && searchedItemUPPER.Contains(itemNameUPPER)))
+				{
+					validated.Add(location);
+				}
+			}
+			validated.TrimExcess();
+			return validated.ToArray();
+		}
+
+		public async Task<DropLocation[]> SearchForLocationAsync(string location, bool strictMatch = false)
+		{
+			DropLocation[] dropLocations = await SearchForItemAndLocationAsync(location);
+			List<DropLocation> validated = new List<DropLocation>(dropLocations.Length);
+			string searchedLocUPPER = location.ToUpper();
+			foreach (DropLocation loc in dropLocations)
+			{
+				string locNameUPPER = loc.place.ToUpper();
+				if ((strictMatch && searchedLocUPPER == locNameUPPER) || (!strictMatch && (searchedLocUPPER.Contains(locNameUPPER) || locNameUPPER.Contains(searchedLocUPPER))))
+				{
+					validated.Add(loc);
+				}
+			}
+			validated.TrimExcess();
+			return validated.ToArray();
+		}
+
 		public DropClient()
 		{
 			http = new HttpClient
@@ -107,16 +148,26 @@ namespace WarframeStats.Drops
 		/// <returns></returns>
 		public async Task RefreshDataAsync()
 		{
-			string response;
+			string responseSortieReward, responseTransientRewards;
+			Task<string> sortieRewardsTasks = http.GetStringAsync("sortieRewards.json");
+			Task<string> transientRewardsTask = http.GetStringAsync("transientRewards.json");
 
-			response = await http.GetStringAsync("sortieRewards.json");
-			SortieRewards = await JsonSerializer.DeserializeAsync<SortieRewards>(response.ToStream());
+			responseSortieReward = await sortieRewardsTasks;
+			responseTransientRewards = await transientRewardsTask;
 
-			response = await http.GetStringAsync("transientRewards.json");
-			TransientRewards = await JsonSerializer.DeserializeAsync<TransientRewards>(response.ToStream());
+			ValueTask<SortieRewards> sortieRewardObj = JsonSerializer.DeserializeAsync<SortieRewards>(responseSortieReward.ToStream());
+			ValueTask<TransientRewards> transientRewardsObj = JsonSerializer.DeserializeAsync<TransientRewards>(responseTransientRewards.ToStream());
 
-			response = await http.GetStringAsync("modLocations.json");
-			ModLocations = await JsonSerializer.DeserializeAsync<ModLocations>(response.ToStream());
+			SortieRewards = await sortieRewardObj;
+			TransientRewards = await transientRewardsObj;
+
+			//response = await http.GetStringAsync("modLocations.json");
+			//ModLocations = await JsonSerializer.DeserializeAsync<ModLocations>(response.ToStream());
+		}
+
+		public void Dispose()
+		{
+			http.Dispose();
 		}
 	}
 }

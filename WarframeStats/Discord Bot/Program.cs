@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace WarframeDiscordBot
 			public string Details => "Made by Elfahor";
 		}
 
-		private static void Main() => MainAsync().GetAwaiter().GetResult();
+		private static async Task Main() => await MainAsync();
 
 		private static async Task MainAsync()
 		{
@@ -51,13 +52,12 @@ namespace WarframeDiscordBot
 			await Task.Delay(-1);
 		}
 
-		private static async Task<Task> Log(LogMessage message)
+		private static async Task Log(LogMessage message)
 		{
 			await Task.Run(() => Console.WriteLine(message.ToString()));
-			return Task.CompletedTask;
 		}
 
-		private static async Task<Task> MessageReceived(SocketMessage message)
+		private static async Task MessageReceived(SocketMessage message)
 		{
 			string[] words = message.Content.Split(" ");
 
@@ -127,29 +127,51 @@ namespace WarframeDiscordBot
 
 			else if (message.Content.StartsWith("when baro"))
 			{
-				VoidTrader voidTrader = warframeClient.WorldStatePC.voidTrader;				
+				VoidTrader voidTrader = warframeClient.WorldStatePC.voidTrader;
 				await message.Channel.SendMessageAsync(WFDataAsString.VoidTrader(voidTrader));
 			}
 
-			else if (message.Content.StartsWith("where mod"))
+			else if (message.Content.StartsWith("where "))
 			{
-				try
+				string itemName = "";
+				for (int i = 1; i < words.Length; i++)
 				{
-					string modName = "";
-					for (int i = 2; i < words.Length; ++i)
-					{
-						modName += words[i];
-					}
-					Mod.EnemyDroppedOn[] ennemiesDroppedOn = await warframeClient.dropClient.GetModDroppersAsync(modName);
-					await message.Channel.SendMessageAsync(WFDataAsString.ModEnemiesDroppedOn(ennemiesDroppedOn));
+					itemName += words[i] + " ";
 				}
-				catch (ArgumentException e)
-				{
-					await message.Channel.SendMessageAsync(e.Message);
-				}
+				itemName = itemName.Trim();
+				DropLocation[] locations = await warframeClient.dropClient.SearchForItemAsync(itemName, strictMatch: true);
+				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations));
 			}
 
-			return Task.CompletedTask;
+			else if (message.Content.StartsWith("what "))
+			{
+				string placeName = "";
+				for (int i = 1; i < words.Length; i++)
+				{
+					placeName += words[i] + " ";
+				}
+				placeName = placeName.Trim();
+				DropLocation[] locations = await warframeClient.dropClient.SearchForLocationAsync(placeName);
+				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations));
+			}
+
+			//else if (message.Content.StartsWith("where mod"))
+			//{
+			//	try
+			//	{
+			//		string modName = "";
+			//		for (int i = 2; i < words.Length; ++i)
+			//		{
+			//			modName += words[i];
+			//		}
+			//		Mod.EnemyDroppedOn[] ennemiesDroppedOn = await warframeClient.dropClient.GetModDroppersAsync(modName);
+			//		await message.Channel.SendMessageAsync(WFDataAsString.ModEnemiesDroppedOn(ennemiesDroppedOn));
+			//	}
+			//	catch (ArgumentException e)
+			//	{
+			//		await message.Channel.SendMessageAsync(e.Message);
+			//	}
+			//}
 		}
 	}
 }

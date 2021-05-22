@@ -10,9 +10,9 @@ namespace WarframeStats.WorldState
 	/// <summary>
 	/// Client for getting the world state from ws.warframestat.us
 	/// </summary>
-	public class WorldStateClient
+	public class WorldStateClient : IDisposable
 	{
-		private HttpClient http;
+		private readonly HttpClient http;
 
 		/// <summary>
 		/// The current world state from the warframe API on PC
@@ -29,8 +29,10 @@ namespace WarframeStats.WorldState
 
 		public WorldStateClient()
 		{
-			http = new HttpClient();
-			http.BaseAddress = new Uri("https://ws.warframestat.us/");
+			http = new HttpClient
+			{
+				BaseAddress = new Uri("https://ws.warframestat.us/")
+			};
 		}
 
 		/// <summary>
@@ -58,6 +60,11 @@ namespace WarframeStats.WorldState
 				default:
 					throw new ArgumentException($"{platform} is not a valid platform: must be pc, ps4 or xb1");
 			}
+		}
+
+		public void Dispose()
+		{
+			http.Dispose();
 		}
 	}
 }
