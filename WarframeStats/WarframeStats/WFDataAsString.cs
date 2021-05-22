@@ -160,15 +160,24 @@ namespace WarframeStats
 		//	return repr;
 		//}
 
-		public static string DropLocationsItems(DropLocation[] dropLocations)
+		public static string DropLocationsItems(DropLocation[] dropLocations, string searchedName, bool strictMatch = true)
 		{
-			string repr = $"{dropLocations[0].item} drops on:\n";
+			string repr = $"{searchedName} drops on:\n";
 			foreach (DropLocation location in dropLocations)
 			{
-				repr += $"	- {location.place}: {location.chance}% ({location.rarity})\n";
+				repr += $"	- {location.place}: {location.chance}% " + (strictMatch ? "" : $"of {location.item} ") + $"({location.rarity})\n";
 			}
 			return repr;
+		}
 
+		public static string DropLocationsLocations(DropLocation[] dropLocations)
+		{
+			string repr = $"{dropLocations[0].place} drops:\n";
+			foreach (DropLocation location in dropLocations)
+			{
+				repr += $"	- {location.item}: {location.chance}% ({location.rarity})\n";
+			}
+			return repr;
 		}
 	}
 }

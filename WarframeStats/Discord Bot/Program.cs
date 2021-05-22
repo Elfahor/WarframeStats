@@ -140,7 +140,7 @@ namespace WarframeDiscordBot
 				}
 				itemName = itemName.Trim();
 				DropLocation[] locations = await warframeClient.dropClient.SearchForItemAsync(itemName, strictMatch: true);
-				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations));
+				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations, itemName));
 			}
 
 			else if (message.Content.StartsWith("what "))
@@ -152,7 +152,7 @@ namespace WarframeDiscordBot
 				}
 				placeName = placeName.Trim();
 				DropLocation[] locations = await warframeClient.dropClient.SearchForLocationAsync(placeName);
-				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations));
+				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsLocations(locations));
 			}
 
 			//else if (message.Content.StartsWith("where mod"))
