@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -154,24 +153,6 @@ namespace WarframeDiscordBot
 				DropLocation[] locations = await warframeClient.dropClient.SearchForLocationAsync(placeName);
 				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsLocations(locations));
 			}
-
-			//else if (message.Content.StartsWith("where mod"))
-			//{
-			//	try
-			//	{
-			//		string modName = "";
-			//		for (int i = 2; i < words.Length; ++i)
-			//		{
-			//			modName += words[i];
-			//		}
-			//		Mod.EnemyDroppedOn[] ennemiesDroppedOn = await warframeClient.dropClient.GetModDroppersAsync(modName);
-			//		await message.Channel.SendMessageAsync(WFDataAsString.ModEnemiesDroppedOn(ennemiesDroppedOn));
-			//	}
-			//	catch (ArgumentException e)
-			//	{
-			//		await message.Channel.SendMessageAsync(e.Message);
-			//	}
-			//}
 		}
 	}
 }

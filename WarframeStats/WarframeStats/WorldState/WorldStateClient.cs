@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -45,7 +43,7 @@ namespace WarframeStats.WorldState
 		public async Task RefreshDataAsync(string platform)
 		{
 			string response = await http.GetStringAsync(platform);
-			WorldState data = await JsonSerializer.DeserializeAsync<WorldState>(new MemoryStream(Encoding.UTF8.GetBytes(response ?? "")));
+			WorldState data = await StringUtils.JsonDeserializeAsync<WorldState>(response);
 			switch (platform)
 			{
 				case "pc":
@@ -61,6 +59,8 @@ namespace WarframeStats.WorldState
 					throw new ArgumentException($"{platform} is not a valid platform: must be pc, ps4 or xb1");
 			}
 		}
+
+		
 
 		public void Dispose()
 		{

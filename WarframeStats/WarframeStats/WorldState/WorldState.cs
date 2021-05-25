@@ -129,46 +129,60 @@ namespace WarframeStats.WorldState
 	/// </summary>
 	public class Sortie
 	{
-		public string id { get; set; }
-		public DateTime activation { get; set; }
-		public string startString { get; set; }
-		public DateTime expiry { get; set; }
-		public bool active { get; set; }
-		public string rewardPool { get; set; }
+		internal string id { get; set; }
+		[JsonPropertyName("activation")]
+		public DateTime StartDate { get; set; }
+		internal string startString { get; set; }
+		[JsonPropertyName("expiry")]
+		public DateTime ExpiryDate { get; set; }
+		internal bool active { get; set; }
+		internal string rewardPool { get; set; }
 		/// <summary>
 		/// The different missions with their modifiers
 		/// </summary>
 		[JsonPropertyName("variants")]
-		public SortieMission[] missions { get; set; }
-		public string boss { get; set; }
-		public string faction { get; set; }
-		public bool expired { get; set; }
-		[JsonPropertyName("eta")]
-		public string TimeRemaining { get; set; }
+		public SortieMission[] Missions { get; set; }
+		[JsonPropertyName("boss")]
+		public string Boss { get; set; }
+		[JsonPropertyName("faction")]
+		public string Faction { get; set; }
+		internal bool expired { get; set; }
+		internal string eta { get; set; }
+
+		public string TimeRemaining => (DateTime.Now.ToUniversalTime() - ExpiryDate.ToUniversalTime()).Negate().ToWFString();
+
+		public class SortieMission
+		{
+			public string boss { get; set; }
+			public string planet { get; set; }
+			public string missionType { get; set; }
+			public string modifier { get; set; }
+			public string modifierDescription { get; set; }
+			public string node { get; set; }
+		}
 	}
 
-	public class SortieMission
-	{
-		public string boss { get; set; }
-		public string planet { get; set; }
-		public string missionType { get; set; }
-		public string modifier { get; set; }
-		public string modifierDescription { get; set; }
-		public string node { get; set; }
-	}
 
 	public class VoidTrader
 	{
-		public string id { get; set; }
-		public DateTime activation { get; set; }
-		public string startString { get; set; }
-		public DateTime expiry { get; set; }
-		public bool active { get; set; }
-		public string character { get; set; }
-		public string location { get; set; }
-		public object[] inventory { get; set; }
-		public string psId { get; set; }
-		public string endString { get; set; }
+		internal string id { get; set; }
+		[JsonPropertyName("activation")]
+		public DateTime StartDate { get; set; }
+		internal string startString { get; set; }
+		[JsonPropertyName("expiry")]
+		public DateTime ExpiryDate { get; set; }
+		[JsonPropertyName("active")]
+		public bool Active { get; set; }
+		[JsonPropertyName("character")]
+		public string TraderName { get; set; }
+		[JsonPropertyName("location")]
+		public string Location { get; set; }
+		[JsonPropertyName("inventory"), Obsolete]
+		public object[] Inventory { get; set; }
+		internal string psId { get; set; }
+		internal string endString { get; set; }
+
+		public string TimeRemaining => (DateTime.Now.ToUniversalTime() - ExpiryDate.ToUniversalTime()).Negate().ToWFString();
 	}
 
 	public class Simaris

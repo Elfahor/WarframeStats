@@ -61,13 +61,13 @@ namespace WarframeStats
 		public static string Sortie(Sortie sortie)
 		{
 			string repr = $"Today's sortie:\n" +
-					$"	- Faction: {sortie.faction}\n" +
-					$"	- Boss: {sortie.boss}\n" +
+					$"	- Faction: {sortie.Faction}\n" +
+					$"	- Boss: {sortie.Boss}\n" +
 					$"	- Time remaining: {sortie.TimeRemaining}\n" +
 					$"	- Missions:\n";
-			for (int i = 0; i < sortie.missions.Length; i++)
+			for (int i = 0; i < sortie.Missions.Length; i++)
 			{
-				SortieMission variant = sortie.missions[i];
+				Sortie.SortieMission variant = sortie.Missions[i];
 				repr += $"		- Mission {i + 1}: {variant.missionType}, {variant.modifierDescription}\n";
 			}
 			return repr;
@@ -99,13 +99,13 @@ namespace WarframeStats
 		public static string VoidTrader(VoidTrader voidTrader)
 		{
 			string repr;
-			if (voidTrader.active)
+			if (voidTrader.Active)
 			{
-				repr = $"{voidTrader.character} is currently at {voidTrader.location}!";
+				repr = $"{voidTrader.TraderName} is currently at {voidTrader.Location}!";
 			}
 			else
 			{
-				repr = $"{voidTrader.character} is due in {voidTrader.startString} at {voidTrader.location}";
+				repr = $"{voidTrader.TraderName} is due in {voidTrader.TimeRemaining} at {voidTrader.Location}";
 
 			}
 			return repr;

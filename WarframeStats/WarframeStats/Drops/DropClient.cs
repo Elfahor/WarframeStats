@@ -23,45 +23,18 @@ namespace WarframeStats.Drops
 		/// </summary>
 		public TransientRewards TransientRewards { get; private set; }
 
-		///// <summary>
-		/// Get all the data for which enemies mods drop on
-		/// </summary>
-		//public ModLocations ModLocations { get; private set; }
-		//
-		///// <summary>
-		/// Get the whole list of enemies a certain mod drops on
-		/// </summary>
-		/// <param name="modName">Name of the mod</param>
-		/// <returns></returns>
-		//public async Task<Mod.EnemyDroppedOn[]> GetModDroppersAsync(string modName)
-		//{
-		//	return await Task.Run(() => GetModDroppers(modName));
-		//}
-		//
-		//private Mod.EnemyDroppedOn[] GetModDroppers(string modName)
-		//{
-		//	foreach (Mod item in ModLocations.modLocations)
-		//	{
-		//		if (item.modName == modName)
-		//		{
-		//			return item.enemies;
-		//		}
-		//	}
-		//	throw new ArgumentException("This mod does not exist or does not drop on an enemy");
-		//}
-
 		/// <summary>
 		/// Get data about a relic's tiers and drops
 		/// </summary>
 		/// <param name="tier">Lith, Meso, Neo, Axi, or Requiem</param>
 		/// <param name="name">Names look like O5, K4, Z2</param>
 		/// <returns>The relic named "tier" "name"</returns>
-		public async Task<Relic> GetRelicLootAsync(string tier, string name)
+		internal async Task<Relic> GetRelicLootAsync(string tier, string name)
 		{
 			try
 			{
 				string response = await http.GetStringAsync($"relics/{tier}/{name}.json");
-				return await JsonSerializer.DeserializeAsync<Relic>(response.ToStream());
+				return await StringUtils.JsonDeserializeAsync<Relic>(response);
 			}
 			catch (HttpRequestException)
 			{
@@ -74,18 +47,18 @@ namespace WarframeStats.Drops
 		/// </summary>
 		/// <param name="planet">Earth, Ceres, Sedna...</param>
 		/// <param name="node">The name of the mission (e.g. Apollo)</param>
-		public async Task<MissionNode> GetMissionLootAsync(string planet, string node)
+		internal async Task<MissionNode> GetMissionLootAsync(string planet, string node)
 		{
 			try
 			{
 				string response = await http.GetStringAsync($"missionRewards/{planet}/{node}.json");
 				try
 				{
-					return await JsonSerializer.DeserializeAsync<EndlessMission>(response.ToStream());
+					return await StringUtils.JsonDeserializeAsync<EndlessMission>(response);
 				}
 				catch (JsonException)
 				{
-					return await JsonSerializer.DeserializeAsync<FiniteMission>(response.ToStream());
+					return await StringUtils.JsonDeserializeAsync<FiniteMission>(response);
 				}
 			}
 			catch (HttpRequestException)
@@ -98,7 +71,7 @@ namespace WarframeStats.Drops
 		{
 			string requestUri = "http://api.warframestat.us/drops/search/" + itemOrLocation.Replace("/", "%2F");
 			string response = await http.GetStringAsync(requestUri);
-			return await JsonSerializer.DeserializeAsync<DropLocation[]>(response.ToStream());
+			return await StringUtils.JsonDeserializeAsync<DropLocation[]>(response);
 		}
 		public async Task<DropLocation[]> SearchForItemAsync(string item, bool strictMatch = true)
 		{
@@ -148,21 +121,18 @@ namespace WarframeStats.Drops
 		/// <returns></returns>
 		public async Task RefreshDataAsync()
 		{
-			string responseSortieReward, responseTransientRewards;
+			string responseSortieRewards, responseTransientRewards;
 			Task<string> sortieRewardsTasks = http.GetStringAsync("sortieRewards.json");
 			Task<string> transientRewardsTask = http.GetStringAsync("transientRewards.json");
 
-			responseSortieReward = await sortieRewardsTasks;
+			responseSortieRewards = await sortieRewardsTasks;
 			responseTransientRewards = await transientRewardsTask;
 
-			ValueTask<SortieRewards> sortieRewardObj = JsonSerializer.DeserializeAsync<SortieRewards>(responseSortieReward.ToStream());
-			ValueTask<TransientRewards> transientRewardsObj = JsonSerializer.DeserializeAsync<TransientRewards>(responseTransientRewards.ToStream());
+			Task<SortieRewards> sortieRewardObj = StringUtils.JsonDeserializeAsync<SortieRewards>(responseSortieRewards);
+			Task<TransientRewards> transientRewardsObj = StringUtils.JsonDeserializeAsync<TransientRewards>(responseTransientRewards);
 
 			SortieRewards = await sortieRewardObj;
 			TransientRewards = await transientRewardsObj;
-
-			//response = await http.GetStringAsync("modLocations.json");
-			//ModLocations = await JsonSerializer.DeserializeAsync<ModLocations>(response.ToStream());
 		}
 
 		public void Dispose()
