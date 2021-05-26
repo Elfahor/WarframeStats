@@ -12,6 +12,7 @@ namespace WarframeStats
 
 		public static string ToWFString(this TimeSpan timeSpan) => $"{(timeSpan.Days > 0 ? $"{timeSpan.Days}d " : "")}{timeSpan.Hours}h {timeSpan.Minutes}m {timeSpan.Seconds}s";
 
+		[Obsolete("Use the default System.Text.Json")]
 		public static Task<T> JsonDeserializeAsync<T>(string response)
 		{
 			return Task.Run(() => JsonSerializer.Deserialize<T>(response));

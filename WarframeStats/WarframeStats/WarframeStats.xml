@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WarframeStats</name>
+    </assembly>
+    <members>
+        <member name="T:WarframeStats.Drops.DropClient">
+            <summary>
+            Client for getting drop data
+            </summary>
+        </member>
+        <member name="P:WarframeStats.Drops.DropClient.SortieRewards">
+            <summary>
+            Reward pool for sorties
+            </summary>
+        </member>
+        <member name="P:WarframeStats.Drops.DropClient.TransientRewards">
+            <summary>
+            Reward pool for special missions: Razoback Armadas, Nightmare mode...
+            </summary>
+        </member>
+        <member name="M:WarframeStats.Drops.DropClient.GetRelicLootAsync(System.String,System.String)">
+            <summary>
+            Get data about a relic's tiers and drops
+            </summary>
+            <param name="tier">Lith, Meso, Neo, Axi, or Requiem</param>
+            <param name="name">Names look like O5, K4, Z2</param>
+            <returns>The relic named "tier" "name"</returns>
+        </member>
+        <member name="M:WarframeStats.Drops.DropClient.GetMissionLootAsync(System.String,System.String)">
+            <summary>
+            Get the reward pool for a mission
+            </summary>
+            <param name="planet">Earth, Ceres, Sedna...</param>
+            <param name="node">The name of the mission (e.g. Apollo)</param>
+        </member>
+        <member name="M:WarframeStats.Drops.DropClient.RefreshDataAsync">
+            <summary>
+            Refreshes static data, like sorties reward pools. This doesn't need to called often as these pools rarely change.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WarframeStats.WarframeClient">
+            <summary>
+            Full client for all services: world state, player stats, drop data
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.worldStateClient">
+            <summary>
+            Client for getting the world's state
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.WorldStatePC">
+            <summary>
+            The current world state from the warframe API on PC
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.WorldStatePS4">
+            <summary>
+            The current world state from the warframe API on PS4
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.WorldStateXB1">
+            <summary>
+            The current world state from the warframe API on XB1
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.dropClient">
+            <summary>
+            Client for getting drop data
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.SortieRewards">
+            <summary>
+            Reward pool for sorties
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WarframeClient.TransientRewards">
+            <summary>
+            Reward pool for special missions: Razoback Armadas, Nightmare mode...
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WarframeClient.GetRelicLootAsync(System.String,System.String)">
+            <summary>
+            Get data about a relic's tiers and drops
+            </summary>
+            <param name="tier">Lith, Meso, Neo, Axi, or Requiem</param>
+            <param name="name">Names look like O5, K4, Z2</param>
+            <returns>The relic named "tier" "name"</returns>
+        </member>
+        <member name="M:WarframeStats.WarframeClient.GetMissionLootAsync(System.String,System.String)">
+            <summary>
+            Get the reward pool for a mission
+            </summary>
+            <param name="planet">Earth, Ceres, Sedna...</param>
+            <param name="node">The name of the mission (e.g. Apollo)</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WarframeStats.WarframeClient.#ctor" -->
+        <member name="M:WarframeStats.WarframeClient.RefreshDataAsync(System.String)">
+            <summary>
+            Refreshes all the data for all services
+            </summary>
+            <param name="platform">Either "pc", "ps4" or "xb1"</param>
+            <returns></returns>
+        </member>
+        <member name="T:WarframeStats.WFDataAsString">
+            <summary>
+            Offers conversion of various objects into a human-readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.SortieRewards(WarframeStats.Drops.SortieRewards)">
+            <summary>
+            Converts SortieRewards in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Events(WarframeStats.WorldState.Event[])">
+            <summary>
+            Converts Event[] in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.News(WarframeStats.WorldState.News[])">
+            <summary>
+            Converts News[] in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Sortie(WarframeStats.WorldState.Sortie)">
+            <summary>
+            Converts Sortie in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Fissures(WarframeStats.WorldState.Fissure[],System.String)">
+            <summary>
+            Converts Fissure[] in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.VoidTrader(WarframeStats.WorldState.VoidTrader)">
+            <summary>
+            Converts VoidTrader in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Relic(WarframeStats.Drops.Relic)">
+            <summary>
+            Converts Relic in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Loot(WarframeStats.Drops.Loot)">
+            <summary>
+            Converts Loot in a human readable format
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WFDataAsString.Loots(WarframeStats.Drops.Loot[])">
+            <summary>
+            Converts Loot[] in a human readable format
+            </summary>
+        </member>
+        <member name="T:WarframeStats.WorldState.WorldState">
+            <summary>
+            Full data about the state of the world
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.timestamp">
+            <summary>
+            When the data have last been updated
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.news">
+            <summary>
+            News about Prime Access, DevStreams, etc.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.events">
+            <summary>
+            Current events, e.g. Thermia Fractures
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.alerts">
+            <summary>
+            You shouldn't use this as alerts have been removed from the game. This is only here to help with API deserialization.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.sortie">
+            <summary>
+            Info about the current sortie: boss, faction, modifiers
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.syndicateMissions">
+            <summary>
+            All Syndicate Missions. Not recommended right now.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.fissures">
+            <summary>
+            Void fissures data: tier, node, etc.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.globalUpgrades">
+            <summary>
+            You shouldn't use this. This is only here to help with API deserialization.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.flashSales">
+            <summary>
+            I don't know what that is but it is in the API
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.invasions">
+            <summary>
+            Invasions data: reward, factions, nodes
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.darkSectors">
+            <summary>
+            You shouldn't use this as dark sectors have been removed from the game. This is only here to help with API deserialization.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.voidTrader">
+            <summary>
+            When baro
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.dailyDeals">
+            <summary>
+            Darvo's deals
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.simaris">
+            <summary>
+            Daily Simaris synthesis
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.conclaveChallenges">
+            <summary>
+            Nobody plays the CONCLAVE
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.persistentEnemies">
+            <summary>
+            You shouldn't use this as persistent enemies have been removed from the game. This is only here to help with API deserialization.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.earthCycle">
+            <summary>
+            Day/Night cycle on Earth
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.cetusCycle">
+            <summary>
+            Day/Night cycle in the PoE
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.cambionCycle">
+            <summary>
+            Wyrm cycle on Deimos
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.weeklyChallenges">
+            <summary>
+            I don't know what that is but it is probably some removed content
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.constructionProgress">
+            <summary>
+            Progress for the construction of Razorback Armadas and Balor Fomorians
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.vallisCycle">
+            <summary>
+            Warm/Cold cycle in the Orb Vallis
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.nightwave">
+            <summary>
+            Nightwave challenges
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.kuva">
+            <summary>
+            I guess it's kuva siphons/flood, but it always gives empty list.
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.arbitration">
+            <summary>
+            The current Arbitration
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.sentientOutposts">
+            <summary>
+            Sentient anomaly in the Veil Proxima
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldState.steelPath">
+            <summary>
+            The current rotation item and the possible items
+            </summary>
+        </member>
+        <member name="T:WarframeStats.WorldState.Sortie">
+            <summary>
+            Info about the current sortie: boss, faction, modifiers
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.Sortie.Missions">
+            <summary>
+            The different missions with their modifiers
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.Arbitration.sharkwing">
+            <summary>
+            Dunno
+            </summary>
+        </member>
+        <member name="T:WarframeStats.WorldState.WorldStateClient">
+            <summary>
+            Client for getting the world state from ws.warframestat.us
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldStateClient.WorldStatePC">
+            <summary>
+            The current world state from the warframe API on PC
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldStateClient.WorldStatePS4">
+            <summary>
+            The current world state from the warframe API on PS4
+            </summary>
+        </member>
+        <member name="P:WarframeStats.WorldState.WorldStateClient.WorldStateXB1">
+            <summary>
+            The current world state from the warframe API on XB1
+            </summary>
+        </member>
+        <member name="M:WarframeStats.WorldState.WorldStateClient.RefreshDataAsync(System.String)">
+            <summary>
+            Updates the data from the warframe API.
+            </summary>
+            <exception cref="T:System.Text.Json.JsonException">If there is a problem with the data</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">If there is a problem with the platform</exception>
+            <param name="platform">Either "pc", "ps4", "xb1"</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,15 +16,15 @@ namespace WarframeStats.WorldState
 		/// <summary>
 		/// The current world state from the warframe API on PC
 		/// </summary>
-		public WorldState WorldStatePC { get; private set; }
+		public WorldState WorldStatePC { get; private set; } = null;
 		/// <summary>
 		/// The current world state from the warframe API on PS4
 		/// </summary>
-		public WorldState WorldStatePS4 { get; private set; }
+		public WorldState WorldStatePS4 { get; private set; } = null;
 		/// <summary>
 		/// The current world state from the warframe API on XB1
 		/// </summary>
-		public WorldState WorldStateXB1 { get; private set; }
+		public WorldState WorldStateXB1 { get; private set; } = null;
 
 		public WorldStateClient()
 		{
@@ -42,8 +43,11 @@ namespace WarframeStats.WorldState
 		/// <returns></returns>
 		public async Task RefreshDataAsync(string platform)
 		{
+			HashSet<string> validPlatforms = new HashSet<string> { "pc", "xb1", "ps4" };
+			if (!validPlatforms.Contains(platform)) throw new ArgumentException($"{platform} is not a valid platform: must be pc, ps4 or xb1");
+
 			string response = await http.GetStringAsync(platform);
-			WorldState data = await StringUtils.JsonDeserializeAsync<WorldState>(response);
+			WorldState data = JsonSerializer.Deserialize<WorldState>(response);
 			switch (platform)
 			{
 				case "pc":
@@ -55,12 +59,8 @@ namespace WarframeStats.WorldState
 				case "xb1":
 					WorldStateXB1 = data;
 					break;
-				default:
-					throw new ArgumentException($"{platform} is not a valid platform: must be pc, ps4 or xb1");
 			}
 		}
-
-		
 
 		public void Dispose()
 		{

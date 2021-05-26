@@ -9,14 +9,27 @@ namespace WarframeStats
 	public static class WFDataAsString
 	{
 		/// <summary>
-		/// Converts SortieRewards in a human readable format
+		/// Converts DropLocation[] in a human readable format (when it contains items)
 		/// </summary>
-		public static string SortieRewards(SortieRewards sortieRewards)
+		public static string DropLocationsItems(DropLocation[] dropLocations, string searchedName, bool strictMatch = true)
 		{
-			string repr = "Sorties can loot:\n";
-			foreach (Loot item in sortieRewards.sortieRewards)
+			string repr = $"{searchedName} drops on:\n";
+			foreach (DropLocation location in dropLocations)
 			{
-				repr += $"	- {item.itemName}: {item.chance}% ({item.rarity})\n";
+				repr += $"	- {location.place}: {location.chance}% " + (strictMatch ? "" : $"of {location.item} ") + $"({location.rarity})\n";
+			}
+			return repr;
+		}
+
+		/// <summary>
+		/// Converts DropLocation[] in a human readable format (when it contains location)
+		/// </summary>
+		public static string DropLocationsLocations(DropLocation[] dropLocations)
+		{
+			string repr = $"{dropLocations[0].place} drops:\n";
+			foreach (DropLocation location in dropLocations)
+			{
+				repr += $"	- {location.item}: {location.chance}% ({location.rarity})\n";
 			}
 			return repr;
 		}
@@ -34,41 +47,6 @@ namespace WarframeStats
 			if (events.Length == 0)
 			{
 				repr = "There are no events currently";
-			}
-			return repr;
-		}
-
-		/// <summary>
-		/// Converts News[] in a human readable format
-		/// </summary>
-		public static string News(News[] news)
-		{
-			string repr = $"Here are the news:\n";
-			foreach (News n in news)
-			{
-				repr += $"	 - {n.message}\n";
-			}
-			if (news.Length == 0)
-			{
-				repr = "There are no news currently";
-			}
-			return repr;
-		}
-
-		/// <summary>
-		/// Converts Sortie in a human readable format
-		/// </summary>
-		public static string Sortie(Sortie sortie)
-		{
-			string repr = $"Today's sortie:\n" +
-					$"	- Faction: {sortie.Faction}\n" +
-					$"	- Boss: {sortie.Boss}\n" +
-					$"	- Time remaining: {sortie.TimeRemaining}\n" +
-					$"	- Missions:\n";
-			for (int i = 0; i < sortie.Missions.Length; i++)
-			{
-				Sortie.SortieMission variant = sortie.Missions[i];
-				repr += $"		- Mission {i + 1}: {variant.missionType}, {variant.modifierDescription}\n";
 			}
 			return repr;
 		}
@@ -94,19 +72,50 @@ namespace WarframeStats
 		}
 
 		/// <summary>
-		/// Converts VoidTrader in a human readable format
+		/// Converts Loot in a human readable format
 		/// </summary>
-		public static string VoidTrader(VoidTrader voidTrader)
+		public static string Loot(Loot loot)
 		{
-			string repr;
-			if (voidTrader.Active)
-			{
-				repr = $"{voidTrader.TraderName} is currently at {voidTrader.Location}!";
-			}
-			else
-			{
-				repr = $"{voidTrader.TraderName} is due in {voidTrader.TimeRemaining} at {voidTrader.Location}";
+			string repr = $"{loot.itemName}: {loot.chance}% ({loot.rarity})";
+			return repr;
+		}
 
+		/// <summary>
+		/// Converts Loot[] in a human readable format
+		/// </summary>
+		public static string Loots(Loot[] loots)
+		{
+			string repr = "";
+			foreach (Loot loot in loots)
+			{
+				repr += $"	- {Loot(loot)}\n";
+			}
+			return repr;
+		}
+
+		/// <summary>
+		/// Converts News[] in a human readable format
+		/// </summary>
+		public static string News(News[] news)
+		{
+			string repr = $"Here are the news:\n";
+			foreach (News n in news)
+			{
+				repr += $"	 - {n.message}\n";
+			}
+			if (news.Length == 0)
+			{
+				repr = "There are no news currently";
+			}
+			return repr;
+		}
+
+		public static string Nightwave(Nightwave nightwave)
+		{
+			string repr = $"Nightwave season {nightwave.Season} ends in {nightwave.TimeRemaining}\n";
+			foreach (Nightwave.NWChallenge challenge in nightwave.ActiveChallenges)
+			{
+				repr += $"	- {challenge.Title} ({(challenge.IsDaily ? "Daily" : challenge.IsElite ? "Elite Weekly" : "Weekly")}: {challenge.Description} ({challenge.TimeRemaining} remaining)\n";
 			}
 			return repr;
 		}
@@ -129,53 +138,50 @@ namespace WarframeStats
 		}
 
 		/// <summary>
-		/// Converts Loot in a human readable format
+		/// Converts Sortie in a human readable format
 		/// </summary>
-		public static string Loot(Loot loot)
+		public static string Sortie(Sortie sortie)
 		{
-			string repr = $"{loot.itemName}: {loot.chance}% ({loot.rarity})";
+			string repr = $"Today's sortie:\n" +
+					$"	- Faction: {sortie.Faction}\n" +
+					$"	- Boss: {sortie.Boss}\n" +
+					$"	- Time remaining: {sortie.TimeRemaining}\n" +
+					$"	- Missions:\n";
+			for (int i = 0; i < sortie.Missions.Length; i++)
+			{
+				Sortie.SortieMission variant = sortie.Missions[i];
+				repr += $"		- Mission {i + 1}: {variant.missionType}, {variant.modifierDescription}\n";
+			}
 			return repr;
 		}
 
 		/// <summary>
-		/// Converts Loot[] in a human readable format
+		/// Converts SortieRewards in a human readable format
 		/// </summary>
-		public static string Loots(Loot[] loots)
+		public static string SortieRewards(SortieRewards sortieRewards)
 		{
-			string repr = "";
-			foreach (Loot loot in loots)
+			string repr = "Sorties can loot:\n";
+			foreach (Loot item in sortieRewards.sortieRewards)
 			{
-				repr += $"	- {Loot(loot)}\n";
+				repr += $"	- {item.itemName}: {item.chance}% ({item.rarity})\n";
 			}
 			return repr;
 		}
 
-		//public static string ModEnemiesDroppedOn(Mod.EnemyDroppedOn[] enemiesDroppedOn)
-		//{
-		//	string repr = "The mod drops on:\n";
-		//	foreach (Mod.EnemyDroppedOn enemy in enemiesDroppedOn)
-		//	{
-		//		repr += $"	- {enemy.enemyName}: {enemy.chance}% ({enemy.rarity})\n";
-		//	}
-		//	return repr;
-		//}
-
-		public static string DropLocationsItems(DropLocation[] dropLocations, string searchedName, bool strictMatch = true)
+		/// <summary>
+		/// Converts VoidTrader in a human readable format
+		/// </summary>
+		public static string VoidTrader(VoidTrader voidTrader)
 		{
-			string repr = $"{searchedName} drops on:\n";
-			foreach (DropLocation location in dropLocations)
+			string repr;
+			if (voidTrader.Active)
 			{
-				repr += $"	- {location.place}: {location.chance}% " + (strictMatch ? "" : $"of {location.item} ") + $"({location.rarity})\n";
+				repr = $"{voidTrader.TraderName} is currently at {voidTrader.Location}!";
 			}
-			return repr;
-		}
-
-		public static string DropLocationsLocations(DropLocation[] dropLocations)
-		{
-			string repr = $"{dropLocations[0].place} drops:\n";
-			foreach (DropLocation location in dropLocations)
+			else
 			{
-				repr += $"	- {location.item}: {location.chance}% ({location.rarity})\n";
+				repr = $"{voidTrader.TraderName} is due in {voidTrader.TimeRemaining} at {voidTrader.Location}";
+
 			}
 			return repr;
 		}

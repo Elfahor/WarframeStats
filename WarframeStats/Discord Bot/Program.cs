@@ -22,11 +22,8 @@ namespace WarframeDiscordBot
 		private class BotActivity : IActivity
 		{
 			public string Name => "api.warframestat.us";
-
 			public ActivityType Type => ActivityType.Listening;
-
 			public ActivityProperties Flags => ActivityProperties.None;
-
 			public string Details => "Made by Elfahor";
 		}
 
@@ -94,6 +91,12 @@ namespace WarframeDiscordBot
 				}
 			}
 
+			else if(message.Content.StartsWith("what nightwave"))
+			{
+				Nightwave nightwave = warframeClient.WorldStatePC.nightwave;
+				await message.Channel.SendMessageAsync(WFDataAsString.Nightwave(nightwave));
+			}
+
 			else if (message.Content.StartsWith("what in sorties"))
 			{
 				SortieRewards sortieRewards = warframeClient.SortieRewards;
@@ -138,7 +141,7 @@ namespace WarframeDiscordBot
 					itemName += words[i] + " ";
 				}
 				itemName = itemName.Trim();
-				DropLocation[] locations = await warframeClient.dropClient.SearchForItemAsync(itemName, strictMatch: true);
+				DropLocation[] locations = await warframeClient.SearchForItemAsync(itemName, strictMatch: true);
 				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsItems(locations, itemName));
 			}
 
@@ -150,7 +153,7 @@ namespace WarframeDiscordBot
 					placeName += words[i] + " ";
 				}
 				placeName = placeName.Trim();
-				DropLocation[] locations = await warframeClient.dropClient.SearchForLocationAsync(placeName);
+				DropLocation[] locations = await warframeClient.SearchForLocationAsync(placeName);
 				await message.Channel.SendMessageAsync(WFDataAsString.DropLocationsLocations(locations));
 			}
 		}
